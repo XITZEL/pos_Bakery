@@ -1,4 +1,5 @@
 // src/App.tsx
+// Proyecto Panadería Palacios
 import React from 'react'
 import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
