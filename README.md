@@ -225,14 +225,6 @@ El administrador puede consultar reportes como:
 
 ---
 
-# 📌 Autor
-
-Proyecto desarrollado para la materia **Programación Web**.
-
-**Instituto Tecnológico de Tijuana**
-
-Integrantes:
-
 - Karla Itzel Vazquez Cruz  
 - Iker Saul Alonso Villela  
 - Jesus Eduardo Galeana Leja
