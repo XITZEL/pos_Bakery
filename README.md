@@ -71,7 +71,7 @@ http://localhost:5173
 
 # 🧾 Descripción del Sistema
 
-**Bakery Master POS** es un sistema web diseñado para administrar las operaciones de una panadería en una sola sucursal.
+**Bakery POS** es un sistema web diseñado para administrar las operaciones de una panadería en una sola sucursal.
 
 El sistema centraliza el registro de ventas, el control de inventario y la generación de reportes administrativos, permitiendo al administrador supervisar la operación del negocio.
 
@@ -224,7 +224,3 @@ El administrador puede consultar reportes como:
 - No está integrado con terminal bancaria.
 
 ---
-
-- Karla Itzel Vazquez Cruz  
-- Iker Saul Alonso Villela  
-- Jesus Eduardo Galeana Leja
