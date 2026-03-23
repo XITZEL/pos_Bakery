@@ -1,39 +1,168 @@
-// src/App.tsx
-// Proyecto Panadería Palacios
-import React from 'react'
-import { useEffect, useState } from 'react'
-import { supabase } from './lib/supabase'
+import { useState, useEffect } from 'react';
+import { Login } from './components/Login';
+import { Producto, ItemVenta, MetodoPago } from './types';
+import { ListaProductos } from './components/ListaProductos';
+import { getSession, logout } from './api/auth'; 
+import { ZonaCobro } from './components/ZonaCobro';
+import { guardarVenta } from './api/cobro';
+import { supabase } from './lib/supabase';
+import { PanelAdmin } from './components/PanelAdmin';
 
-function TarjetaPan({ nombre, precio }: { nombre: string, precio: number }) {
-  return (
-    <div style={{
-      border: '2px solid #8b4513',
-      borderRadius: '10px',
-      padding: '15px',
-      margin: '10px',
-      width: '200px',
-      backgroundColor: '#fffaf0',
-      textAlign: 'center',
-      display: 'inline-block'
-    }}>
-      <h3 style={{ margin: 0 }}>{nombre}</h3>
-      <p style={{ color: '#d2691e', fontWeight: 'bold' }}>${precio} MXN</p>
-      <button onClick={() => alert(`Vendido: ${nombre}`)}>Vender</button>
-    </div>
-  )
-}
 function App() {
-  return (
-    <div style={{ padding: '20px' }}>
-      <h1>🥐 Mostrador de Panadería Palacios</h1>
+  const [usuario, setUsuario] = useState<any>(null);
+  const [carrito, setCarrito] = useState<ItemVenta[]>([]);
+  const [cargando, setCargando] = useState(true);
+  const [vistaActual, setVistaActual] = useState<'ventas' | 'admin'>('ventas');  // --- LÓGICA DEL CARRITO ---
+  
+  
+  const agregarAlCarrito = (producto: Producto) => {
+    setCarrito(prev => {
+      const existe = prev.find(item => item.id === producto.id);
+      if (existe) {
+        return prev.map(item => 
+          item.id === producto.id ? { ...item, cantidad: item.cantidad + 1 } : item
+        );
+      }
+      return [...prev, { ...producto, cantidad: 1 }];
+    });
+  };
+
+  const handleAgregarUno = (id: string) => {
+    setCarrito(prev => prev.map(item => 
+      item.id === id ? { ...item, cantidad: item.cantidad + 1 } : item
+    ));
+  };
+
+  const handleQuitarUno = (id: string) => {
+    setCarrito(prev => prev
+      .map(item => item.id === id ? { ...item, cantidad: item.cantidad - 1 } : item)
+      .filter(item => item.cantidad > 0)
+    );
+  };
+
+  // --- LÓGICA DE FINALIZAR VENTA ---
+  const handleFinalizarVenta = async (metodo: MetodoPago) => {
+    try {
+      if (carrito.length === 0) return alert("El carrito está vacío");
+
+      // Calculamos el total aquí adentro para que no dé error
+      const totalVenta = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
       
-      {/* 2. ¡Aquí usas tus etiquetas propias! */}
-      <TarjetaPan nombre="Concha de Vainilla" precio={15} />
-      <TarjetaPan nombre="Bolillo Calientito" precio={5} />
-      <TarjetaPan nombre="Oreja Crujiente" precio={18} />
+      // Llamamos a la API de cobro
+      await guardarVenta(carrito, metodo, totalVenta, usuario.id);
       
-    </div>
-  )
+      alert("¡Venta guardada!");
+      setCarrito([]); 
+      
+      // Refrescamos para ver el stock actualizado
+      window.location.reload(); 
+        
+    } catch (error) {
+      console.error(error);
+      alert("Error al guardar la venta");
+    }
+  };
+
+  // --- LÓGICA DE SESIÓN ---
+  const [rol, setRol] = useState<string | null>(null); // Nuevo estado para el rol
+
+  useEffect(() => {
+  const verificarSesion = async () => {
+    const sesion = await getSession();
+    
+    if (sesion) {
+      setUsuario(sesion.user);
+      
+      // BUSCAMOS EL ROL EN TU TABLA USUARIOS
+      const { data, error } = await supabase
+        .from('usuarios')
+        .select('rol')
+        .eq('id', sesion.user.id)
+        .single();
+
+      if (data) {
+        setRol(data.rol); // Guardamos 'Administrador' o 'Cajero'
+      }
+    }
+    setCargando(false);
+  };
+  verificarSesion();
+}, []);
+
+  // --- RENDERIZADO (VISTAS) ---
+  if (cargando) {
+    return (
+      <div>
+        <h2>Iniciando sistema de Panadería Palacios...</h2>
+      </div>
+    );
+  }
+
+  if (!usuario) {
+    return (
+      <div>
+        <Login onLogin={(user) => setUsuario(user)} />
+      </div>
+    );
+  }
+
+ // Modifica el return de tu App.tsx:
+return (
+  <div>
+   <header >
+        <h1 >Panadería Palacios - POS</h1>
+        
+        <nav >
+          <button 
+            onClick={() => setVistaActual('ventas')}
+          >
+            Caja
+          </button>
+
+          {/* Botón que solo ves tú como admin */}
+          {rol === 'admin' && (
+            <button 
+              onClick={() => setVistaActual('admin')}
+            >
+              Inventario
+            </button>
+          )}
+
+          <button onClick={async () => { await logout(); setUsuario(null); }}>
+            Salir
+          </button>
+        </nav>
+      </header>
+
+<main >
+        
+        {/* VISTA DE VENTAS: Lista + Ticket al lado */}
+        {vistaActual === 'ventas' && (
+          <div>
+            <section >
+              <ListaProductos onAgregar={agregarAlCarrito} />
+            </section>
+            <aside>
+              <ZonaCobro 
+                carrito={carrito}
+                onAgregarUno={handleAgregarUno}
+                onQuitarUno={handleQuitarUno}
+                onFinalizar={handleFinalizarVenta}
+              />
+            </aside>
+          </div>
+        )}
+
+        {/* VISTA DE ADMIN: Solo el panel a lo ancho */}
+        {vistaActual === 'admin' && rol === 'admin' && (
+          <section>
+            <PanelAdmin />
+          </section>
+        )}
+
+      </main>
+  </div>
+);
 }
 
-export default App
+export default App;
