@@ -1,3 +1,4 @@
+//src/components/ZonaCobro.tsx
 import { ItemVenta, MetodoPago } from "../types";
 
 interface InterfazCobro {
@@ -25,8 +26,8 @@ export const ZonaCobro = ({ carrito, onAgregarUno, onQuitarUno, onFinalizar }: I
                 ))}
         </ul>
         <p>Total: ${total}</p>
-        <button onClick={() => onFinalizar('Efectivo')}>Cobrar Efectivo</button>
-        <button onClick={() => onFinalizar('Tarjeta')}>Cobrar Tarjeta</button>
+        <button onClick={() => onFinalizar('Efectivo')}>Efectivo</button>
+        <button onClick={() => onFinalizar('Tarjeta')}>Tarjeta</button>
     </div>
   );
 };

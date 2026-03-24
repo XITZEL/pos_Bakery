@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { loginConEmail } from '../api/auth';
 
-// Le pasamos una "prop" llamada onLogin para avisarle a App.tsx cuando el usuario entre
+
 export const Login = ({ onLogin }: { onLogin: (user: any) => void }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -10,7 +10,7 @@ export const Login = ({ onLogin }: { onLogin: (user: any) => void }) => {
     e.preventDefault();
     try {
       const user = await loginConEmail(email, password);
-      onLogin(user); // Le avisamos a App.tsx que ya entramos
+      onLogin(user);
     } catch (error: any) {
       alert(error.message);
     }

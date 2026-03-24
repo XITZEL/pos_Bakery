@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 export const getProductos = async () => {
   console.log("--- INICIANDO BÚSQUEDA DE PANES ---");
 
-  // 1. Intento básico: Solo traer productos sin filtros ni joins
+  // LOGICA para mostrar PRODUCTOS
   const { data, error } = await supabase
     .from('productos')
     .select('*, categorias (nombre)');
@@ -20,10 +20,11 @@ export const getProductos = async () => {
     console.log("¡ÉXITO! Se encontraron estos productos:", data);
   }
 
-  // Regla de los $50 pesos (simplificada para que no rompa nada por ahora)
+  // Regla de los $50 pesos (simplificada para que no rompa nada por ahora) -- Lalo 
   return data?.map(p => ({
     ...p,
-    precio_actual: p.precio // Por ahora mostramos el precio normal para ver si pintan
+    precio_actual: p.precio // Precio normal
+    //FALTA LOGICA sobre el descuento de precios para la CATEGORIA 'Reposteria'
   })) || [];
 };
 

@@ -5,7 +5,7 @@ export const ListaProductos = ({ onAgregar }: { onAgregar: (p: any) => void }) =
   const [productos, setProductos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // 1. ESTADO PARA EL BUSCADOR
+  // 1. ESTADO del buscador
   const [busqueda, setBusqueda] = useState('');
 
   useEffect(() => {
@@ -28,6 +28,7 @@ export const ListaProductos = ({ onAgregar }: { onAgregar: (p: any) => void }) =
     .filter(p => p.nombre.toLowerCase().includes(busqueda.toLowerCase()))
     // B) ORDENAR: El que tiene más stock va hasta arriba (b - a)
     .sort((a, b) => b.stock - a.stock);
+    // c) Proximamente: En base al mas popular (Mas vendido)
 
   if (loading) return <p>Preparando los hornos... </p>;
 
@@ -48,7 +49,7 @@ export const ListaProductos = ({ onAgregar }: { onAgregar: (p: any) => void }) =
 
       <div>
         {productosProcesados.map(p => {
-          // 3. BLOQUEO DE STOCK
+          // 3. BLOQUEO de stock 
           const sinStock = p.stock <= 0;
 
           return (
@@ -62,12 +63,12 @@ export const ListaProductos = ({ onAgregar }: { onAgregar: (p: any) => void }) =
                 {p.imagen_url ? (
                   <img src={p.imagen_url} alt={p.nombre}  />
                 ) : (
-                  'PAN'
+                  'Foto_PAN'
                 )}
               </div>
 
               <div>
-                <span>{p.categorias?.nombre || 'General'}</span>
+                <span>{p.categorias?.nombre || 'Sin categoria'}</span>
                 <h4>{p.nombre}</h4>
                 <div>
                   <span>${p.precio_actual}</span>

@@ -1,3 +1,4 @@
+// src/components/PanelAdmin.tsx
 import { useState, useEffect } from 'react';
 import { getProductos, actualizarProducto } from '../api/productos';
 
@@ -5,18 +6,18 @@ export const PanelAdmin = () => {
   const [productos, setProductos] = useState<any[]>([]);
 
   const cargar = async () => {
-    const data = await getProductos();
-    setProductos(data);
+    const productos = await getProductos();
+    setProductos(productos);
   };
 
   useEffect(() => { cargar(); }, []);
 
-  // FUNCIÓN GENÉRICA PARA ACTUALIZAR
+  // funcion para "Actualizar"
   const actualizarInfo = async (id: string, cambios: any, mensaje: string) => {
     try {
       await actualizarProducto(id, cambios);
       alert(mensaje);
-      cargar(); // Recargamos la vitrina
+      cargar(); 
     } catch (error) {
       console.error(error);
       alert("Error al conectar con la base de datos");
@@ -51,7 +52,7 @@ export const PanelAdmin = () => {
               
               <td>
                 
-                {/* BOTÓN PARA PRECIO */}
+                {/* boton PRECIO*/}
                 <button onClick={() => {
                   const res = prompt(`Nuevo precio para ${producto.nombre}:`, producto.precio);
                   if (res) {
@@ -62,7 +63,7 @@ export const PanelAdmin = () => {
                   Precio
                 </button>
 
-                {/* BOTÓN PARA SURTIR (NUEVO) */}
+                {/* boton SURTIR */}
                 <button 
                  
                   onClick={() => {
@@ -70,7 +71,7 @@ export const PanelAdmin = () => {
                     if (res) {
                       const num = parseInt(res);
                       if (!isNaN(num)) {
-                        // Aquí sumamos lo que llegó al stock que ya tienes (aunque sea negativo)
+                        // Aquí sumamos lo que llegó al stock que existe (aunque sea negativo) -- SE DEBE CORREGIR 
                         actualizarInfo(producto.id, { stock: producto.stock + num }, "Inventario surtido");
                       }
                     }

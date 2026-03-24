@@ -106,7 +106,7 @@ function App() {
     );
   }
 
- // Modifica el return de tu App.tsx:
+ // 
 return (
   <div>
    <header >
@@ -119,7 +119,7 @@ return (
             Caja
           </button>
 
-          {/* Botón que solo ves tú como admin */}
+          {/*Boton "Inventario" para 'admin'*/}
           {rol === 'admin' && (
             <button 
               onClick={() => setVistaActual('admin')}
@@ -136,7 +136,7 @@ return (
 
 <main >
         
-        {/* VISTA DE VENTAS: Lista + Ticket al lado */}
+        {/* Tarjetas + Ticket*/}
         {vistaActual === 'ventas' && (
           <div>
             <section >
@@ -153,7 +153,7 @@ return (
           </div>
         )}
 
-        {/* VISTA DE ADMIN: Solo el panel a lo ancho */}
+        {/*Vista admin*/}
         {vistaActual === 'admin' && rol === 'admin' && (
           <section>
             <PanelAdmin />
