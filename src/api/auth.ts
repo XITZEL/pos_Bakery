@@ -8,22 +8,22 @@ export const loginConEmail = async (email: string, pass: string) =>
     password:pass,
   });
 
-
+  
 if (error) 
   {
-    throw new Error("Credenciales incorrectas. Revisa tu corro y contraseña");
+    throw new Error("Credenciales incorrectas. Revisa tu correo y contraseña");
   }
 
   return data.user;
-
+  
 };
-
+//Entrar
 export const getSession = async() =>{
   const {data: {session}, error } = await supabase.auth.getSession();
   if (error) return null;
   return session;
 }
-
+//Salir
 export const logout = async()=>{
   const {error} = await supabase.auth.signOut();
   if (error) throw error;

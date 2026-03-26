@@ -26,7 +26,7 @@ export const Login = ({ onLogin }: { onLogin: (user: any) => void }) => {
           onChange={(e) => setEmail(e.target.value)} 
           required 
         />
-        <br /><br />
+        
         <input 
           type="password" 
           placeholder="Contraseña" 

@@ -7,14 +7,14 @@ export const guardarVenta = async (carrito: ItemVenta[], metodo: MetodoPago, tot
     .insert([{ 
       total, 
       metodo_pago: metodo, 
-      usuario_id: usuarioId // <--- Ahora sí le decimos quién cobra
+      usuario_id: usuarioId // id_usuario
     }])
     .select()
     .single();
 
   if (errorVenta) throw errorVenta;
 
-  // 2. Insertar los detalles de la venta
+  // Insertar los detalles de la venta
   const detalles = carrito.map(item => ({
     venta_id: venta.id,
     producto_id: item.id,

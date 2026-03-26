@@ -45,16 +45,16 @@ function App() {
     try {
       if (carrito.length === 0) return alert("El carrito está vacío");
 
-      // Calculamos el total aquí adentro para que no dé error
+      // Calculamos el total
       const totalVenta = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
       
       // Llamamos a la API de cobro
       await guardarVenta(carrito, metodo, totalVenta, usuario.id);
       
-      alert("¡Venta guardada!");
+      alert("Venta Completada");
       setCarrito([]); 
       
-      // Refrescamos para ver el stock actualizado
+      // stock actualizado
       window.location.reload(); 
         
     } catch (error) {
@@ -73,7 +73,7 @@ function App() {
     if (sesion) {
       setUsuario(sesion.user);
       
-      // BUSCAMOS EL ROL EN TU TABLA USUARIOS
+      // buscamos el ROL que se encuentra en SESION
       const { data, error } = await supabase
         .from('usuarios')
         .select('rol')
@@ -81,7 +81,7 @@ function App() {
         .single();
 
       if (data) {
-        setRol(data.rol); // Guardamos 'Administrador' o 'Cajero'
+        setRol(data.rol); // 'admin' o 'cajero'
       }
     }
     setCargando(false);
@@ -89,7 +89,7 @@ function App() {
   verificarSesion();
 }, []);
 
-  // --- RENDERIZADO (VISTAS) ---
+  // --- RENDIRIZADO ---
   if (cargando) {
     return (
       <div>
